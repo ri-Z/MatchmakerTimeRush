@@ -34,8 +34,8 @@ int egPlayers;
 
 int playercount = 0;
 int sessioncount = 0;
-string path = "/c C:/Users/riZ/Documents/Dev/GitHub/TimeRush/TimeRush/Build/WindowsNoEditor/TimeRush/Binaries/Win64/TimeRushServer.exe";
-string LevelEntry = " /Game/Maps/Entry";
+string path = "/c C:/Users/timerush/Desktop/WindowsNoEditor/TimeRush/Binaries/Win64/TimeRushServer.exe";
+string LevelEntry = " /Game/Maps/FinalLevel";
 
 string port = " -PORT =";
 string Alog = " -log";
@@ -69,61 +69,13 @@ void InterpreteMessage(char* buffer, PlayerInfo pInfo)
 	if (cmd == 'g')
 	{
 		string message = "s|null|";
-		if (send(pInfo.client, message.c_str(),
-			message.length(), 0) == SOCKET_ERROR)
+		if (send(pInfo.client, message.c_str(),	message.length(), 0) == SOCKET_ERROR)
 		{
 			cout << "send failed!" << endl;
 		}
 	}
 	else if (cmd == 'h')
 	{
-		if (stoi(params.at(3)) == 2) {
-			if (twpsessions.size() > 0)
-			{
-				SessionInfo s;
-				for (list<SessionInfo>::iterator it = twpsessions.begin();
-					it != twpsessions.end(); it++)
-				{
-					s = *it;
-					string message = "s|" + to_string(it->id) + "|"
-						+ it->name + "|" + it->serverip + "|"
-						+ to_string(it->serverport) + "|" + to_string(twpsessions.size() + 1) + "|";
-					cout << message << endl;
-					if (send(pInfo.client, message.c_str(),
-						message.length(), 0) == SOCKET_ERROR)
-					{
-						cout << "send failed!" << endl;
-					}
-				}
-				sessions.push_back(twpsessions.front());
-				twpsessions.clear();
-			}
-			else {
-				SessionInfo session;
-				session.id = pInfo.id;
-				session.name = params.at(0);
-				session.serverip = params.at(1);
-				session.serverport = stoi(params.at(2)) + sessioncount;
-				sessioncount++;
-				twpsessions.push_back(session);
-				string Nport = port + to_string(session.serverport);
-				string fullpath = "";
-				if (stoi(params.at(4)) == 0) {
-					fullpath = (path + LevelEntry + Nport + Alog);
-				}
-				ShellExecute(0, "open", "cmd.exe", fullpath.c_str(), 0, SW_NORMAL);
-				//Sleep(2000);
-				string message = "o|" + to_string(session.serverport) + "|";
-				cout << message << endl;
-				if (send(pInfo.client, message.c_str(),
-					message.length(), 0) == SOCKET_ERROR)
-				{
-					cout << "send failed!" << endl;
-				}
-			}
-
-		}
-
 		if (stoi(params.at(3)) == 4) {
 			if (frpsessions.size() > 0)
 			{
@@ -137,8 +89,7 @@ void InterpreteMessage(char* buffer, PlayerInfo pInfo)
 						+ it->name + "|" + it->serverip + "|"
 						+ to_string(it->serverport) + "|" + to_string(frpsessions.size() + 1) + "|";
 					cout << message << endl;
-					if (send(pInfo.client, message.c_str(),
-						message.length(), 0) == SOCKET_ERROR)
+					if (send(pInfo.client, message.c_str(), message.length(), 0) == SOCKET_ERROR)
 					{
 						cout << "send failed!" << endl;
 					}
@@ -164,7 +115,7 @@ void InterpreteMessage(char* buffer, PlayerInfo pInfo)
 				}
 				ShellExecute(0, "open", "cmd.exe", fullpath.c_str(), 0, SW_NORMAL);
 				//Sleep(2000);
-				string message = "o|" + params.at(2) + "|";
+				string message = "o|" + to_string(session.serverport) + "|";
 				cout << message << endl;
 
 				if (send(pInfo.client, message.c_str(),
@@ -174,58 +125,6 @@ void InterpreteMessage(char* buffer, PlayerInfo pInfo)
 				}
 			}
 		}
-
-		if (stoi(params.at(3)) == 8) {
-			if (egpPsessions.size() > 0)
-			{
-				egPlayers++;
-				SessionInfo s;
-				for (list<SessionInfo>::iterator it = egpPsessions.begin();
-					it != egpPsessions.end(); it++)
-				{
-					s = *it;
-					string message = "s|" + to_string(it->id) + "|"
-						+ it->name + "|" + it->serverip + "|"
-						+ to_string(it->serverport) + "|" + to_string(egpPsessions.size() + 1) + "|";
-					cout << message << endl;
-					if (send(pInfo.client, message.c_str(),
-						message.length(), 0) == SOCKET_ERROR)
-					{
-						cout << "send failed!" << endl;
-					}
-				}
-				if (egPlayers == 8) {
-					sessions.push_back(egpPsessions.front());
-					egpPsessions.clear();
-					egPlayers = 0;
-				}
-			}
-			else {
-				SessionInfo session;
-				session.id = pInfo.id;
-				session.name = params.at(0);
-				session.serverip = params.at(1);
-				session.serverport = stoi(params.at(2)) + sessioncount;
-				sessioncount++;
-				egpPsessions.push_back(session);
-				string Nport = port + to_string(session.serverport);
-				string fullpath = "";
-				if (stoi(params.at(4)) == 0) {
-					fullpath = (path + LevelEntry + Nport + Alog);
-				}
-				ShellExecute(0, "open", "cmd.exe", fullpath.c_str(), 0, SW_NORMAL);
-				//Sleep(2000);
-				string message = "o|" + params.at(2) + "|";
-				cout << message << endl;
-				if (send(pInfo.client, message.c_str(),
-					message.length(), 0) == SOCKET_ERROR)
-				{
-					cout << "send failed!" << endl;
-				}
-			}
-		}
-
-
 	}
 	else
 	{
@@ -253,28 +152,6 @@ void HandleClientThread(PlayerInfo pInfo)
 	{
 		cout << "closesocket() failed" << endl;
 	}
-
-
-	//bool deleted = false;
-	//for (int i = 0; i < sessioncount; i++) {
-	//	if (pInfo.id == get(sessions, i).id) {
-	//		cout << "Session erased" << endl;
-	//		list<SessionInfo>::iterator itr = getIteratorS(sessions, i);
-	//		sessions.erase(itr);
-	//		deleted = true;
-	//	}
-	//}
-	//if (deleted)
-	//	sessioncount--;
-
-	//cout << sessions.size() << endl;
-
-
-	////if (players.size() > 0)
-	//list<PlayerInfo>::iterator itr = getIteratorP(players, playercount);
-	//players.erase(itr);
-	//playercount--;
-
 }
 
 int main()
@@ -338,25 +215,31 @@ int main()
 	}
 }
 
-SessionInfo get(list<SessionInfo> _list, int _i) {
+SessionInfo get(list<SessionInfo> _list, int _i) 
+{
 	list<SessionInfo>::iterator it = _list.begin();
-	for (int i = 0; i < _i; i++) {
+	for (int i = 0; i < _i; i++) 
+	{
 		++it;
 	}
 	return *it;
 }
 
-list<SessionInfo>::iterator getIteratorS(list<SessionInfo> _list, int _i) {
+list<SessionInfo>::iterator getIteratorS(list<SessionInfo> _list, int _i)
+{
 	list<SessionInfo>::iterator it = _list.begin();
-	for (int i = 0; i < _i; i++) {
+	for (int i = 0; i < _i; i++) 
+	{
 		++it;
 	}
 	return it;
 }
 
-list<PlayerInfo>::iterator getIteratorP(list<PlayerInfo> _list, int _i) {
+list<PlayerInfo>::iterator getIteratorP(list<PlayerInfo> _list, int _i)
+{
 	list<PlayerInfo>::iterator it = _list.begin();
-	for (int i = 0; i < _i; i++) {
+	for (int i = 0; i < _i; i++) 
+	{
 		++it;
 	}
 	return it;

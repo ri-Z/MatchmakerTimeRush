@@ -1,0 +1,5 @@
+﻿  Main.cpp
+c:\users\riz\documents\dev\github\matchmakertimerush\matchmaker\matchmaker\main.cpp(72): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\riz\documents\dev\github\matchmakertimerush\matchmaker\matchmaker\main.cpp(92): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\riz\documents\dev\github\matchmakertimerush\matchmaker\matchmaker\main.cpp(122): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Matchmaker.vcxproj -> C:\Users\riZ\Documents\Dev\GitHub\MatchmakerTimeRush\Matchmaker\x64\Debug\Matchmaker.exe
